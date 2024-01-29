@@ -22,29 +22,21 @@ yarn
 1. Run `yarn hardhat node`
 2. Copy one of the private keys. The first account is the owner by default. 
 
-![Private_Keys](assets/Private_Keys_HH.png "HH Private Keys")
 
 **Add Account**
 
 1. Press the button `+ Add account or hardware wallet`
 
-![Step_1](assets/Step_1.png "Step_1")
 
 **Import Account**
 
 1. Press the `Import account` button
 
-![Step_2](assets/step_2.png "Step_2")
 
 **Paste Private Key**
 1. Paste the private key copied earlier
 2. Click `Import`
 
-![Step_3](assets/step_3.png "Step_3")
-
-**Final State**
-
-![Metamask](assets/Metamask.png "Metamask")
 
 ## DEPLOYING THE CONTRACT & FRONTEND
 
