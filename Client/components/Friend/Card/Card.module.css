@@ -1,0 +1,63 @@
+.Card_box {
+    display: flex;
+    align-items: center;
+    /* line-height: 0; */
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f1820342;
+    cursor: pointer;
+    justify-content: space-between;
+}
+.Card_box_left_img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.Card_box_right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.Card_box_right_middle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem; /* Adjust the gap between elements */
+    overflow: hidden; /* Prevent text overflow */
+    text-overflow: ellipsis; /* Show ellipsis for overflowed text */
+    white-space: nowrap; /* Prevent line breaks */
+}
+
+.Card_box_left {
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.number {
+    display: flex;
+    align-items: center;
+    /* position: absolute;
+    right: 2rem;
+    padding: 1rem 1.3rem;
+    border-radius: 50%;
+    background-color: #f18303;
+    top: 1rem; */
+}
+
+@media only screen and (max-width: 35em) {
+    .Card_box_right {
+        flex-direction: row; /* Change direction for smaller screens */
+    }
+    .Card_box_right_middle {
+        flex-direction: row; /* Change direction for smaller screens */
+    }
+    .Card_box_right_end {
+        display: none; /* Hide the element on smaller screens */
+    }
+}
