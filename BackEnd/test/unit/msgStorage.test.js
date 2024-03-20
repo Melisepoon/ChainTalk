@@ -1,4 +1,4 @@
-const { assert, expect } = require("chai")
+const { expect } = require("chai")
 const { network, deployments, ethers } = require("hardhat")
 const { developmentChains } = require("../../helper-hardhat-config.js")
 /**
@@ -27,7 +27,7 @@ const { developmentChains } = require("../../helper-hardhat-config.js")
  */
 !developmentChains.includes(network.name)
     ? describe.skip
-    : describe("MessageStorage", function () {
+    : describe("MessageStorage Test", function () {
           let Message_Storage_d
           let Message_Storage_u_1
           let deployer

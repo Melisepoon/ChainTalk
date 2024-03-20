@@ -5,10 +5,12 @@ const {
     USERNAME1,
     USER_EMAIL1,
     USER_PASSWORD_HASH1,
+    USERNAME2,
+    USER_EMAIL2,
+    USER_PASSWORD_HASH2,
 } = require("../../helper-hardhat-config.js")
 
 /**
- * NOT OK
  * Test cases to add:
  *
  * Registration of user + retrieve info
@@ -31,40 +33,103 @@ const {
  */
 developmentChains.includes(network.name)
     ? describe.skip
-    : describe("UserRegistrationAndAuthentication", function () {
-        //   let User_d
-        //   let deployer
-        let UserRegistrationAndAuthentication;
-        let userRegistration;
+    : describe("UserRegistrationAndAuthentication Contract", function () {
+          let UserRegistrationAndAuthentication
+          let userRegistrationAndAuthentication
+          let owner
+          let user
+          let friend
+
           beforeEach(async () => {
-            //   deployer = (await getNamedAccounts()).deployer
-            //   userOne = (await getNamedAccounts()).userOne
-            //   await deployments.fixture("all")
-            //   User_d = await ethers.getContract(
-            //       "UserRegistrationAndAuthentication",
-            //       deployer,
-            //   )
-              UserRegistrationAndAuthentication = await ethers.getContractFactory(
-                "UserRegistrationAndAuthentication"
-              );
-              userRegistration = await UserRegistrationAndAuthentication.deploy();
-              await userRegistration.deployed();
+              ;[owner, user, friend] = await ethers.getSigners()
+
+              UserRegistrationAndAuthentication =
+                  await ethers.getContractFactory(
+                      "UserRegistrationAndAuthentication",
+                  )
+              userRegistrationAndAuthentication =
+                  await UserRegistrationAndAuthentication.deploy()
+              await userRegistrationAndAuthentication.deployed()
+
+              // Register friend as a user
+              const friendName = USERNAME2
+              const friendEmail = USER_EMAIL2
+              const friendPasswordHash = USER_PASSWORD_HASH2
+              await userRegistrationAndAuthentication
+                  .connect(friend)
+                  .registerUser(friendName, friendEmail, friendPasswordHash)
           })
-          /**
-           * @title tests whether functions are working correctly
-           * @custom tests 4 functionalities
-           */
-          // user 1 sending message to user 2
-          // check that message has been sent and that content of message is correct
-          it("Should register a user and retrieve info", async function () {
-              const userName = USERNAME1
-              const userEmail = USER_EMAIL1
-              const userPasswordHash = USER_PASSWORD_HASH1
 
-              await userRegistration.registerUser(userName, userEmail, userPasswordHash)
+          it("Should register a new user", async function () {
+              const name = USERNAME1
+              const email = USER_EMAIL1
+              const passwordHash = USER_PASSWORD_HASH1
 
-              const userInfo = await userRegistration.getMyUserInfo()
-              expect(userInfo[0]).to.equal(userName)
-              expect(userInfo[1]).to.equal(userEmail)
+              await expect(
+                  userRegistrationAndAuthentication
+                      .connect(user)
+                      .registerUser(name, email, passwordHash),
+              )
+                  .to.emit(userRegistrationAndAuthentication, "UserRegistered")
+                  .withArgs(user.address, name, email)
+
+              const isRegistered =
+                  await userRegistrationAndAuthentication.checkUserExists(
+                      user.address,
+                  )
+              expect(isRegistered).to.be.true
+          })
+
+          it("Should add a friend to the user's friend list", async function () {
+              await userRegistrationAndAuthentication
+                  .connect(user)
+                  .addFriend(friend.address)
+
+              const friendList =
+                  await userRegistrationAndAuthentication.getMyFriendList()
+              expect(friendList).to.include(friend.address)
+          })
+
+          it("Should retrieve user information", async function () {
+              const name = USERNAME1
+              const email = USER_EMAIL1
+              const passwordHash = USER_PASSWORD_HASH1
+
+              await userRegistrationAndAuthentication
+                  .connect(user)
+                  .registerUser(name, email, passwordHash)
+
+              const userInfo =
+                  await userRegistrationAndAuthentication.getMyUserInfo()
+              expect(userInfo[0]).to.equal(name)
+              expect(userInfo[1]).to.equal(email)
+              expect(userInfo[2]).to.be.an("array")
+          })
+
+          it("Should authenticate a registered user based on Soulbound token existence", async function () {
+              const name = USERNAME1
+              const email = USER_EMAIL1
+              const passwordHash = USER_PASSWORD_HASH1
+
+              await userRegistrationAndAuthentication
+                  .connect(user)
+                  .registerUser(name, email, passwordHash)
+
+              // Ensure authentication fails before Soulbound token is minted
+              let isAuthenticated = await userRegistrationAndAuthentication
+                  .connect(user)
+                  .authenticate()
+              expect(isAuthenticated).to.be.false
+
+              // Mint a Soulbound token for the user
+              await userRegistrationAndAuthentication
+                  .connect(user)
+                  .deployIdentityContract()
+
+              // Authenticate the user after Soulbound token is minted
+              isAuthenticated = await userRegistrationAndAuthentication
+                  .connect(user)
+                  .authenticate()
+              expect(isAuthenticated).to.be.true
           })
       })
