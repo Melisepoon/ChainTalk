@@ -1,0 +1,45 @@
+.heading {
+    width: 80%;
+    margin: 2rem auto;
+    font-size: 2rem;
+    color: #f18303;
+}
+/* .heading2 {
+    width: 80%;
+    margin: 2rem auto;
+    font-size: 1rem;
+} */
+.chat_box {
+    width: 80%; /* Adjust width as needed */
+    margin: 0 auto; /* Center the container horizontally */
+    padding: 1rem; /* Add padding for spacing */
+    border-radius: 0.5rem; /* Add rounded corners */
+    background-color: rgba(0, 0, 0, 0.25); /* Set background color */
+}
+.chat_box .heading2 {
+    margin: 2rem 0; /* Adjust margin for spacing between elements */
+    font-size: 1rem; /* Adjust font size */
+}
+
+.chat_box button {
+    background-color: rgba(0, 0, 0, 0.25);
+    color: #f18303;
+    width: 30%;
+    padding: 1rem;
+    border: 1.5px solid #f18303;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 35em) {
+    .heading {
+        width: 90%;
+        margin: 2rem auto;
+        font-size: 1rem;
+    }
+    .heading2 {
+        width: 90%;
+        grid-template-columns: 1fr;
+    }
+}

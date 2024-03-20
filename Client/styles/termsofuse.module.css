@@ -1,0 +1,25 @@
+.heading {
+    width: 80%;
+    margin: 2rem auto;
+    font-size: 2rem;
+    color: #f18303;
+}
+
+.body {
+    width: 80%;
+    margin: 2rem auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5rem;
+}
+
+@media only screen and (max-width: 35em) {
+    .heading {
+        width: 90%;
+        margin: 2rem auto;
+        font-size: 1rem;
+    }
+    .body {
+        width: 90%;
+        grid-template-columns: 1fr;
+    }
+}
