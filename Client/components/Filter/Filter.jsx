@@ -27,15 +27,6 @@ const Filter = () => {
                     </div>
                 </div>
                 <div className={Style.Filter_box_right}>
-                    <button>
-                        <Image
-                            src={images.clear}
-                            alt="clear"
-                            width={20}
-                            height={20}
-                        />
-                        Clear Chat
-                    </button>
                     <button onClick={() => setAddFriends(true)}>
                         <Image
                             src={images.user}
@@ -50,18 +41,18 @@ const Filter = () => {
 
             {/* //MODEL */}
             {addFriends && (
-              <div className={Style.Filter_model}>
-                <Model2 
-                openBox={setAddFriends}
-                title="Welcome to "
-                head="ChainTalk"
-                info="A Blockchain messaging application"
-                smallInfo="Kindly enter your friend's address"
-                image={images.hero}
-                // functionName={addFriend}
-                account
-                />
-              </div>
+                <div className={Style.Filter_model}>
+                    <Model2
+                        openBox={setAddFriends}
+                        title="Welcome to "
+                        head="ChainTalk"
+                        info="A Blockchain messaging application"
+                        smallInfo="Kindly enter your friend's address"
+                        image={images.logo2}
+                        // functionName={addFriend}
+                        account
+                    />
+                </div>
             )}
         </div>
     )

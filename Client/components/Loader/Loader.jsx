@@ -2,6 +2,7 @@ import React from "react"
 
 //Internal import
 import Style from "./Loader.module.css"
+import Image from "next/image"
 import images from "../../assets"
 
 const Loader = () => {

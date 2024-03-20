@@ -30,7 +30,7 @@ const Friend = () => {
     const [account1, setAccount] = useState("")
 
     const fetchFriendUsername = async (friendAddress) => {
-        const contract1= await connectingWithContract1()
+        const contract1 = await connectingWithContract1()
         //GET ACCOUNT
         const connectAccount = await connectWallet()
         setAccount(connectAccount)

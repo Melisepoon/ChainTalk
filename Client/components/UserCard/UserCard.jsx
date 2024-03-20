@@ -9,7 +9,8 @@ const UserCard = ({ el, i, addFriend }) => {
     return (
         <div className={Style.UserCard}>
             <div className={Style.UserCard_box}>
-                <Image className={Style.UserCard_box_img}
+                <Image
+                    className={Style.UserCard_box_img}
                     src={images[`image${i + 1}`]}
                     alt="user"
                     width={100}
@@ -23,10 +24,12 @@ const UserCard = ({ el, i, addFriend }) => {
                         onClick={() =>
                             addFriend({ accountAddress: el.accountAddress })
                         }
-                    >Add Friend</button>
+                    >
+                        Add Friend
+                    </button>
                 </div>
             </div>
-            <small className={Style.number}>{i+1}</small>
+            <small className={Style.number}>{i + 1}</small>
         </div>
     )
 }

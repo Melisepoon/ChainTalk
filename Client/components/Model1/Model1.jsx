@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react"
 import Image from "next/image"
+import { keccak256 } from "web3-utils"
 
 //Internal import
 import Style from "./Model1.module.css"
@@ -70,14 +71,20 @@ const Model1 = ({
                             <div className={Style.Model_box_right_name_info}>
                                 <Image
                                     src={images.username}
-                                    alt="Password hash"
+                                    alt="Password"
                                     width={30}
                                     height={30}
                                 />
                                 <input
-                                    type="text"
-                                    placeholder="your password hash"
-                                    onChange={(e) => setHash(e.target.value)}
+                                    type="password"
+                                    placeholder="your password"
+                                    onChange={(e) => {
+                                        const hashedPassword = keccak256(
+                                            e.target.value
+                                        )
+                                        console.log(hashedPassword)
+                                        setHash(hashedPassword)
+                                    }}
                                 />
                             </div>
                             <div className={Style.Model_box_right_name_info}>
@@ -101,8 +108,10 @@ const Model1 = ({
                                         console.log("Name:", name)
                                         console.log("Email:", email)
                                         console.log("Hash:", hash)
-                                        registerUser({name,email,hash})
-                                        
+                                        registerUser({ name, email, hash })
+                                        // window.location.reload() // Reload the page
+                                        // window.location.href = "alluser"
+
                                         // functionName({ name, email, hash })
                                     }}
                                 >

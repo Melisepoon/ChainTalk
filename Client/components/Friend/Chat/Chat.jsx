@@ -33,20 +33,19 @@ const Chat = ({
         if (!router.isReady) return
         setChatData(router.query)
     }, [router.isReady])
-
-    // uncomment this
-    // useEffect(() => {
-    //     if (chatData.address) {
-    //         //when reload, person chatting with remains
-    //         readMessage(router.query.address)
-    //         readUser(router.query.address)
-    //     }
-    // }, [])
-    
     // const md = readMessage(chatData.address)
     // console.log(md)
-    console.log(friendMsg[0])
-    console.log(Array.isArray(friendMsg))
+
+    // uncomment this
+    useEffect(() => {
+        if (chatData.address) {
+            //when reload, person chatting with remains
+            readMessage(router.query.address)
+            readUser(router.query.address)
+        }
+    }, [])
+    // console.log(friendMsg[0])
+    // console.log(Array.isArray(friendMsg))
 
     console.log(chatData.address, chatData.name)
     // console.log(chatData.address)
@@ -129,23 +128,23 @@ const Chat = ({
                 {currentUserName && currentUserAddress ? (
                     <div className={Style.Chat_box_send}>
                         <div className={Style.Chat_box_send_img}>
-                            <Image
+                            {/* <Image
                                 src={images.smile}
                                 alt="smile"
                                 width={50}
                                 height={50}
-                            />
+                            /> */}
                             <input
                                 type="text"
                                 placeholder="type your message here"
                                 onChange={(e) => setMessage(e.target.value)}
                             />
-                            <Image
+                            {/* <Image
                                 src={images.file}
                                 alt="file"
                                 width={50}
                                 height={50}
-                            />
+                            /> */}
                             {loading == true ? (
                                 <Loader />
                             ) : (

@@ -20,21 +20,14 @@ const NavBar = () => {
             link: "/",
         },
         {
-            menu: "Contact",
-            link: "/",
-        },
-        {
-            menu: "Settings",
-            link: "/",
-        },
-        {
-            menu: "FAQs",
-            link: "/",
+            menu: "Profile",
+            link: "profile",
         },
         {
             menu: "Terms Of Use",
-            link: "/",
+            link: "termsofuse",
         },
+
     ]
 
     //USESTATE
@@ -49,10 +42,11 @@ const NavBar = () => {
         <div className={Style.NavBar}>
             <div className={Style.NavBar_box}>
                 <div className={Style.NavBar_box_left}>
+                    {/* ChainTalk */}
                     <Image
-                        src={images.logo}
+                        src={images.logo1}
                         alt="logo"
-                        width={50}
+                        width={80}
                         height={50}
                     />
                 </div>
@@ -168,7 +162,7 @@ const NavBar = () => {
                         head="ChainTalk"
                         info="A Blockchain Messaging Application"
                         smallInfo="Kindly enter your name..."
-                        image={images.hero}
+                        image={images.logo2}
                         // functionName={(params) => {
                         //     console.log("Parameters:", params) // Log parameters here
                         //     registerUser(params) // Call registerUser function
