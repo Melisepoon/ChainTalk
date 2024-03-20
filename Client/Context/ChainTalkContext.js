@@ -22,6 +22,8 @@ export const ChainTalkProvider = ({ children }) => {
     const [loading, setLoading] = useState(false)
     const [userList, setUserList] = useState([])
     const [error, setError] = useState("")
+    const [userTokenID, setTokenID] = useState("")
+    const [userTokenURI, setTokenURI] = useState("")
 
     // Chat USER DATA (to display who i am chatting with currently)
     const [currentUserName, setCurrentUsername] = useState("")
@@ -63,6 +65,7 @@ export const ChainTalkProvider = ({ children }) => {
                 // setError("")
             }
         } catch (error) {
+            console.error("Error fetching user data:", error)
             // setError("Please install MetaMask and Connect Your Wallet")
             console.log(error)
         }
@@ -79,34 +82,23 @@ export const ChainTalkProvider = ({ children }) => {
             console.log(read.content)
             setFriendMsg(read)
         } catch (error) {
-            // console.log("Currently you have no message")
-            console.log(error)
+            // setError("Currently you have no message")
+            // console.log(error)
         }
+        // const contract2 = await connectingWithContract2()
+        // const read = await contract2.readFriendMessage(friendAddress)
+        // console.log(read.content)
+        // setFriendMsg(read)
     }
 
     // REGISTER ACCOUNT
     const registerUser = async ({ name, email, hash }) => {
-        // try {
-        //     // if (name || email || hash)
-        //     //     return setError("Missing information!")
-
-        //     const { contract1, contract2 } = await connectingWithContract()
-        //     const getCreatedUser = await contract1.registerUser(
-        //         name,
-        //         email,
-        //         hash
-        //     )
-        //     setLoading(true)
-        //     await getCreatedUser.wait()
-        //     setLoading(false)
-        // } catch (error) {
-        //     setError("Error while creating your account. Please reload browser")
-        //     console.log(error)
-        // }
-        // if (name || email || hash)
-        //     return setError("Missing information!")
-
         const contract1 = await connectingWithContract1()
+        const deployIdentityTx = await contract1.deployIdentityContract()
+        await deployIdentityTx.wait()
+        console.log(
+            `Identity Contract deployed successfully at address: ${deployIdentityTx.hash}`
+        )
         const getCreatedUser = await contract1.registerUser(name, email, hash)
         setLoading(true)
         await getCreatedUser.wait()
@@ -157,9 +149,36 @@ export const ChainTalkProvider = ({ children }) => {
         setCurrentUserAddress(userAddress)
     }
 
+    // Retrieve token ID
+    const tokenID = async (userAddress) => {
+        const contract1 = await connectingWithContract1()
+        const userTokenID = await contract1.getSoulboundTokenId(userAddress)
+        setTokenID(userTokenID)
+    }
+    // Retrieve token URI
+    const tokenURI = async (userAddress) => {
+        const contract1 = await connectingWithContract1()
+        const userTokenURI = await contract1.getSoulboundTokenURI(userAddress)
+        setTokenURI(userTokenURI)
+    }
+
+    const uploadClaims = async(userAddress) =>{
+        const contract1 = await connectingWithContract1()
+        const uploadMyClaims = await contract1.uploadClaims(userAddress)
+        setLoading(true)
+        await uploadMyClaims.wait
+        setLoading(false)
+        router.push("/")
+        window.alert(
+            "Claims Updated"
+        )
+        window.location.reload()
+    }
+
     return (
         <ChainTalkContext.Provider
             value={{
+                fetchData,
                 readMessage,
                 registerUser,
                 addFriend,
@@ -167,6 +186,9 @@ export const ChainTalkProvider = ({ children }) => {
                 readUser,
                 connectWallet,
                 CheckIfWalletConnected,
+                tokenID,
+                tokenURI,
+                uploadClaims,
                 userList,
                 account,
                 userName,
@@ -177,6 +199,8 @@ export const ChainTalkProvider = ({ children }) => {
                 error,
                 currentUserName,
                 currentUserAddress,
+                userTokenID,
+                userTokenURI,
             }}
         >
             {children}
