@@ -1,4 +1,6 @@
 import logo from "./logo.png";
+import logo1 from "./logo1.png";
+import logo2 from "./logo2.png";
 import close from "./close.png";
 import open from "./open.png";
 import search from "./search.png";
@@ -30,8 +32,11 @@ import image8 from "./img8.gif";
 import image9 from "./img9.gif";
 import image10 from "./img10.gif";
 
+
 export default {
   logo,
+  logo1,
+  logo2,
   close,
   open,
   search,
