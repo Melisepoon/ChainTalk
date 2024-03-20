@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
+import "./Soulbound.sol";
+import "./ERC735.sol"; // Import the ERC735 contract
+
 error UserNotRegistered();
 
 //0x3a2f83b7b29e34942a4a3211bcb3e8e146c4f779193fc4f3246c41fcf5c221b8
@@ -12,10 +15,21 @@ contract UserRegistrationAndAuthentication {
         bytes32 passwordHash; // Hashed password
         bool isRegistered; // Flag to indicate if the user is registered
         address[] friendList; // Array to store friend addresses
+        uint256 soulboundTokenId; // To store soulbound token id
     }
     struct AllUserStruct {
         string name;
         address accountAddress;
+        address identityContractAddress;
+        ClaimIds claimIds; // Add ClaimIds struct
+    }
+    struct ClaimIds {
+        bytes32 nameClaimId;
+        bytes32 emailClaimId;
+        bytes32 passwordClaimId;
+        bytes32 isRegisteredClaimId;
+        bytes32 friendListClaimId;
+        bytes32 tokenIdClaimId;
     }
 
     AllUserStruct[] getAllUsers;
@@ -23,6 +37,8 @@ contract UserRegistrationAndAuthentication {
     // Mapping to link each user's Ethereum address with their user information
     mapping(address => User) public users;
     mapping(address => bool) public userExist;
+
+    Soulbound public soulboundToken; // Instance of the Soulbound token contract
 
     // Event to emit when a new user is registered
     event UserRegistered(
@@ -35,6 +51,23 @@ contract UserRegistrationAndAuthentication {
         address indexed userAddress,
         address indexed friendAddress
     );
+    event FriendListUploaded(
+        address indexed userAddress,
+        bytes32 friendListClaimId
+    );
+
+    constructor(address _soulboundTokenAddress) {
+        soulboundToken = Soulbound(_soulboundTokenAddress);
+    }
+
+    ERC735 public identityContractInstance;
+
+    event IdentityContractDeployed(address indexed identityContractAddress);
+
+    function deployIdentityContract() external {
+        identityContractInstance = new ERC735();
+        emit IdentityContractDeployed(address(identityContractInstance));
+    }
 
     // Function to register a new user
     function registerUser(
@@ -43,19 +76,76 @@ contract UserRegistrationAndAuthentication {
         bytes32 _passwordHash
     ) public {
         require(!users[msg.sender].isRegistered, "User already registered");
-        // can add in more checks here like name/email/password cannot be empty
         User memory newUser = User({
             name: _name,
             email: _email,
             passwordHash: _passwordHash,
             isRegistered: true,
-            friendList: new address[](0) // to initiate empty friend list
+            friendList: new address[](0), // to initiate empty friend list
+            soulboundTokenId: 0 //Initialise with 0
         });
         //push details of user into array
         users[msg.sender] = newUser;
-        getAllUsers.push(AllUserStruct(_name, msg.sender));
+        // Mint a new Soulbound token for the user
+        uint256 tokenId = soulboundToken.getTokenCounter() + 1;
+        soulboundToken.safeMint(msg.sender);
+        users[msg.sender].soulboundTokenId = tokenId;
+        // To create identity claims:
+        ClaimIds memory claimIds;
+        claimIds.nameClaimId = identityContractInstance.addClaim(1,1,msg.sender,"",bytes(_name),"");
+        claimIds.emailClaimId = identityContractInstance.addClaim(
+            2,
+            1,
+            msg.sender,
+            "",
+            bytes(_email),
+            ""
+        );
+        claimIds.passwordClaimId = identityContractInstance.addClaim(
+            3,
+            1,
+            msg.sender,
+            "",
+            abi.encodePacked(_passwordHash),
+            ""
+        );
+        bytes memory isRegisteredData = abi.encodePacked(uint256(1));
+        claimIds.isRegisteredClaimId = identityContractInstance.addClaim(
+            4,
+            1,
+            msg.sender,
+            "",
+            isRegisteredData,
+            ""
+        );
+        address[] memory emptyFriendList;
+        bytes memory friendListData = abi.encode(emptyFriendList);
+        claimIds.friendListClaimId = identityContractInstance.addClaim(
+            5,
+            1,
+            msg.sender,
+            "",
+            friendListData,
+            ""
+        );
+        bytes memory tokenIdData = abi.encode(tokenId);
+        claimIds.tokenIdClaimId = identityContractInstance.addClaim(
+            6,
+            1,
+            msg.sender,
+            "",
+            tokenIdData,
+            ""
+        );
+        getAllUsers.push(
+            AllUserStruct({
+                name: _name,
+                accountAddress: msg.sender,
+                identityContractAddress: address(identityContractInstance),
+                claimIds: claimIds
+            })
+        );
         userExist[msg.sender] = true;
-
         emit UserRegistered(msg.sender, _name, _email);
     }
 
@@ -89,11 +179,12 @@ contract UserRegistrationAndAuthentication {
         return users[pubkey].name;
     }
 
-    // Function to authenticate user based on password hash
-    function authenticate(bytes32 _passwordHash) public view returns (bool) {
+
+    function authenticate() public view returns (bool) {
         require(users[msg.sender].isRegistered, "User not registered");
 
-        return users[msg.sender].passwordHash == _passwordHash;
+        uint256 tokenId = users[msg.sender].soulboundTokenId;
+        return tokenId != 0; // Return true if token ID is not zero
     }
 
     function addFriend(address _friendAddress) public {
@@ -131,6 +222,62 @@ contract UserRegistrationAndAuthentication {
     // function to fetch all registered users
     function getAllAppUser() public view returns (AllUserStruct[] memory) {
         return getAllUsers;
+    }
+
+    function getUser(
+        address _userAddress
+    ) internal view returns (AllUserStruct memory) {
+        for (uint256 i = 0; i < getAllUsers.length; i++) {
+            if (getAllUsers[i].accountAddress == _userAddress) {
+                return getAllUsers[i];
+            }
+        }
+        revert("UserNotRegistered");
+    }
+
+    function uploadClaims(address userAddress) public {
+        require(userExist[userAddress], "User not registered");
+
+        // Retrieve user information from the user struct
+        AllUserStruct memory user = getUser(userAddress);
+        ClaimIds memory claimIds = user.claimIds;
+
+        // Retrieve the current friend list from the user struct
+        address[] memory friendList = users[userAddress].friendList;
+
+        // Encode friend list data
+        bytes memory friendListData = abi.encode(friendList);
+
+        // Add friend list claim to the ERC735 contract
+        bytes32 friendListClaimId = identityContractInstance.addClaim(
+            5, // Claim type for friend list
+            1, // Scheme
+            userAddress, // Issuer
+            "", // Signature
+            friendListData, // Data
+            "" // URI
+        );
+
+        // Emit event or log friend list addition
+        emit FriendListUploaded(userAddress, friendListClaimId);
+
+        // Update the claim ID in the user's ClaimIds structure
+        claimIds.friendListClaimId = friendListClaimId;
+    }
+
+    function getSoulboundTokenId(
+        address userAddress
+    ) public view returns (uint256) {
+        require(userExist[userAddress], "User not registered");
+        return users[userAddress].soulboundTokenId;
+    }
+
+    function getSoulboundTokenURI(
+        address userAddress
+    ) public view returns (string memory) {
+        require(userExist[userAddress], "User not registered");
+        uint256 tokenId = users[userAddress].soulboundTokenId;
+        return soulboundToken.tokenURI(tokenId);
     }
 
     fallback() external payable {}

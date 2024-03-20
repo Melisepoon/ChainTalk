@@ -84,15 +84,38 @@ contract MessageStorage {
             totalLength
         );
 
+        uint256 index = 0;
+
         for (uint256 i = 0; i < messages1.length; i++) {
             combinedMessages[i] = messages1[i];
+            index++;
         }
 
         for (uint256 j = 0; j < messages2.length; j++) {
             combinedMessages[messages1.length + j] = messages2[j];
+            index++;
         }
 
+        sortMessagesByTimestamp(combinedMessages);
+
         return combinedMessages;
+    }
+
+    function sortMessagesByTimestamp(
+        shortMessage[] memory messages
+    ) internal pure {
+        if (messages.length <= 1) {
+            return; // no need to sort
+        }
+        for (uint256 i = 0; i < messages.length - 1; i++) {
+            for (uint256 j = i + 1; j < messages.length; j++) {
+                if (messages[i].timestamp > messages[j].timestamp) {
+                    shortMessage memory temp = messages[i];
+                    messages[i] = messages[j];
+                    messages[j] = temp;
+                }
+            }
+        }
     }
 
     // Function to retrieve all messages for the caller
@@ -119,4 +142,8 @@ contract MessageStorage {
         // Mark the message as deleted
         userMessages[msg.sender][_messageIndex].isDeleted = true;
     }
+
+    fallback() external payable {}
+
+    receive() external payable {}
 }
