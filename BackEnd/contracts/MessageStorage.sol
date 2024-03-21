@@ -64,12 +64,6 @@ contract MessageStorage {
     }
 
     // // function to return the message from that friend
-    // function readFriendMessage(
-    //     address _friendAddress
-    // ) external view returns (shortMessage[] memory) {
-    //     bytes32 chatCode = _getChatCode(msg.sender, _friendAddress);
-    //     return allMessages[chatCode];
-    // }
     function readFriendMessage(
         address _friendAddress
     ) external view returns (shortMessage[] memory) {
