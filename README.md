@@ -1,5 +1,5 @@
 # ChainTalk -  A decentralised Messaging Application
-_This project was completed as part of the requirements for Module CZ4010: Applied Cryptography, in partial fulfillment of the Computer Science degree program at Nanyang Technological University (NTU)._ <br>
+_This project was completed as part of the requirements for Final Year Project, in partial fulfillment of the Computer Science degree program at Nanyang Technological University (NTU)._ <br>
 
 ****
 
