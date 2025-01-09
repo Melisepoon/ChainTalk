@@ -1,9 +1,16 @@
-# ChainTalk
+# ChainTalk -  A decentralised Messaging Application
+_This project was completed as part of the requirements for Module CZ4010: Applied Cryptography, in partial fulfillment of the Computer Science degree program at Nanyang Technological University (NTU)._ <br>
 
-Blockchain Project to build a Messaging Application
+****
+
+### Description of Project:
+- Ethereum-based innovative communication application built on the blockchain, encompassing both front-end and back-end components.
+- Developed and deployed unique smart contracts using Solidity and InterPlanetary File System (IPFS).
+- ERC-735 standard to form an identity management system.
+- Soulbound tokens for tamper-proof user identities.
 
 
-## CLONING THE REPOSITORY AND INSTALLING PACKAGES
+## Cloning the Repository and Installing Packages
 
 ```
 git clone https://github.com/Melisepoon/ChainTalk.git
