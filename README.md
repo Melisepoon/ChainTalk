@@ -1,4 +1,4 @@
-# ChainTalk -  A decentralised Messaging Application
+# ChainTalk -  A Decentralised Messaging Application
 _This project was completed as part of the requirements for Final Year Project, in partial fulfillment of the Computer Science degree program at Nanyang Technological University (NTU)._ <br>
 
 ****
