@@ -10,7 +10,7 @@ _This project was completed as part of the requirements for Final Year Project, 
 - Soulbound tokens for tamper-proof user identities.
 
 
-## Cloning the Repository and Installing Packages
+## CLONING THE REPOSITORY AND INSTALLING PACKAGES
 
 ```
 git clone https://github.com/Melisepoon/ChainTalk.git
@@ -24,7 +24,7 @@ yarn
 
 ## ADDING HARHDAT WALLETS TO METAMASK
 
-**Finding Private Keys o f Hardhat Wallets**
+**Finding Private Keys of Hardhat Wallets**
 
 1. Run `yarn hardhat node`
 2. Copy one of the private keys. The first account is the owner by default. 
@@ -58,12 +58,11 @@ cd Client
 yarn dev
 ```
 
-
-**Finally**
-1. Open a browser withe the metamask that has the hardhat wallet accounts 
+**To view ChainTalk Website**
+1. Open a browser with the metamask that has the hardhat wallet accounts 
 2. Navigate to `http://localhost:3000`
 
-**To End**
+**To End Program**
 On all running terminals, press `ctr+c` to end. 
 
 
