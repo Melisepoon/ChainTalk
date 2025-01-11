@@ -109,3 +109,9 @@ export const messageStorageAddressTN =
 export const userRegAddressTN = 
     "0xC65691ED04f7457aB3F6825D28BCC2d5ffcDFBf8"
 ```
+
+### References:
+
+https://github.com/smartcontractkit/full-blockchain-solidity-course-js <br>
+https://www.youtube.com/watch?v=yle9MMqY7yY&t=10046s <br>
+
