@@ -9,6 +9,8 @@ _This project was completed as part of the requirements for Final Year Project, 
 - ERC-735 standard to form an identity management system.
 - Soulbound tokens for tamper-proof user identities.
 
+## The project video submission of higher quality can be found below:
+https://youtu.be/db6JeYC1XHY
 
 ## CLONING THE REPOSITORY AND INSTALLING PACKAGES
 
